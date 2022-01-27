@@ -1,6 +1,6 @@
 ## Open to full screen and reload if particles don`t showing
 
-## DEMO: https://codepen.io/VitosPoltos/pen/MWERLPq
+## DEMO: https://codepen.io/VitosPoltos/pen/MWERLPq (Might be an old version)
 
 Particle system with phisics
 
