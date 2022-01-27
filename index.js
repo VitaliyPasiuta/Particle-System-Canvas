@@ -78,6 +78,7 @@ function addNewParticles() {
 }
 
 function addNewParticlesFromMouse(){
+  if(!mousePress) return;
   for(let i = 0; i < mouseEmissionRate; i++){
     particles.push(mouseDown.emitParticle())
   }
