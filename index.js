@@ -1,3 +1,7 @@
+import {Vector} from './js/Vector.js';
+import {Emitter} from './js/Emitter.js';
+import {Field} from './js/Field.js';
+
 let maxParticle = 4000;
 let emissionRate = 6;
 let particleSize = 1;
@@ -28,98 +32,12 @@ function update(){
 function queue() {
   window.requestAnimationFrame(loop);
 }
-// место под draw & update
 
 function draw(){
   drawParticles();
   fields.forEach(drawCircle);
   emitters.forEach(drawCircle)
 }
-
-function Field(point, mass) {
-  this.position = point;
-  this.setMass(mass);
-}
-
-Field.prototype.setMass = function(mass) {
-  this.mass = mass || 100;
-  this.drawColor = mass < 0 ? '#f00' : '#0f0';
-}
-
-
-function Vector(x, y) {
-  this.x = x || 0;
-  this.y = y || 0;
-}
-
-// Add two vectors
-Vector.prototype.add = function(vector){
-  this.x += vector.x;
-  this.y += vector.y;
-}
-
-// Get vector lenght
-Vector.prototype.getMagnitude = function(){
-  return Math.sqrt(this.x * this.x + this.y * this.y);
-}
-
-//Get vector angle, considering qudrant
-Vector.prototype.getAngle = function () {
-  return Math.atan2(this.y, this.x);
-} 
-
-//Get new vector based on angle and size
-Vector.formAngle = function (angle, magnitude) {
-  return new Vector(magnitude * Math.cos(angle), magnitude * Math.sin(angle));
-}  
-
-function Particle(point, velocity, acceleration) {
-  this.position = point || new Vector(0, 0);
-  this.velocity = velocity || new Vector(0, 0);
-  this.acceleration = acceleration || new Vector(0, 0);
-}
-
-Particle.prototype.move = function(){
-  //Add acceleration to velocity
-  this.velocity.add(this.acceleration)
-
-  //Add velocity to coordinates
-  this.position.add(this.velocity);
-}
-
-Particle.prototype.sumbitToFields = function(fields) {
-  let totalAcceletationX = 0;
-  let totalAcceletationY = 0;
-
-  for(let i = 0; i < fields.length; i++){
-    let field = fields[i];
-
-    let vectorX = field.position.x - this.position.x;
-    let vectorY = field.position.y - this.position.y;
-
-    let force = field.mass / Math.pow(vectorX*vectorX+vectorY*vectorY, 1.5);
-
-    totalAcceletationX += vectorX * force;
-    totalAcceletationY += vectorY * force
-  }
-  this.acceleration = new Vector(totalAcceletationX, totalAcceletationY);
-}
-
-function Emitter(point, velocity, spread){
-  this.position = point; //Vector
-  this.velocity = velocity; //Vector
-  this.spread = spread || Math.PI / 32; //Random angle = velocity +/- spread
-  this.drawColor = '#999';
-}
-
-Emitter.prototype.emitParticle = function(){
-  let angle = this.velocity.getAngle() + this.spread - (Math.random() * this.spread * 2);
-  let magnitude = this.velocity.getMagnitude();
-  let position = new Vector(this.position.x, this.position.y);
-  let velocity = Vector.formAngle(angle, magnitude);
-  return new Particle(position, velocity)
-}
-
 
 let particles = [];
 
@@ -172,17 +90,6 @@ function drawCircle(container) {
   ctx.closePath();
   ctx.fill();
 }
-
-// function Field(point, mass) {
-//   this.position = point;
-//   this.setMass(mass);
-// }
-
-// Field.prototype.setMass = function(mass) {
-//   this.mass = mass || 100;
-//   this.drawColor = mass < 0 ? '#f00' : '#0f0';
-// }
-
 
 loop();
 
