@@ -1,12 +1,11 @@
 import { Vector } from "./Vector.js";
 import { Particle } from "./Particle.js";
 
-export class Emitter {
-  constructor(point, velocity, spread) {
+export class Mouse{
+  constructor(point, velocity, spread){
     this.position = point; //Vector
     this.velocity = velocity; //Vector
     this.spread = spread || Math.PI / 32; //Random angle = velocity +/- spread
-    this.drawColor = '#AAA';
   }
   emitParticle() {
     let angle = this.velocity.getAngle() + this.spread - (Math.random() * this.spread * 2);
@@ -15,5 +14,7 @@ export class Emitter {
     let velocity = Vector.formAngle(angle, magnitude);
     return new Particle(position, velocity);
   }
+  setPos(point){
+    this.position = point;
+  }
 }
-

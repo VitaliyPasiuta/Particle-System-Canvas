@@ -1,11 +1,14 @@
 import {Vector} from './js/Vector.js';
 import {Emitter} from './js/Emitter.js';
 import {Field} from './js/Field.js';
+import {Mouse} from './js/Mouse.js';
 
-let maxParticle = 4000;
+let maxParticle = 8000;
 let emissionRate = 6;
+let mouseEmissionRate = 10;
 let particleSize = 1;
 let  objectSize = 3;
+let mousePress = false;
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
@@ -26,6 +29,7 @@ function clear() {
 
 function update(){
   addNewParticles();
+  addNewParticlesFromMouse();
   plotParticles(canvas.width, canvas.height);
 }
 
@@ -39,8 +43,27 @@ function draw(){
   emitters.forEach(drawCircle)
 }
 
-let particles = [];
+canvas.addEventListener('mousedown', spawnParticle);
+canvas.addEventListener('mouseup', endSpawnParticle);
+canvas.addEventListener('mousemove', moveSpawnParticle )
 
+function moveSpawnParticle(event){
+  if(!mousePress) return;
+  mouseDown.setPos(new Vector(event.clientX, event.clientY));
+}
+
+function endSpawnParticle(){
+  mousePress = false;
+  mouseDown.setPos(new Vector(-50, -50))
+}
+
+function spawnParticle(event){
+  mousePress = true;
+  mouseDown.setPos(new Vector(event.clientX, event.clientY))
+}
+
+let particles = [];
+let mouseDown = new Mouse(new Vector(-50, -59), Vector.formAngle(0, 2), 3);
 let emitters = [new Emitter(new Vector(100, 230), Vector.formAngle(0, 2)), new Emitter(new Vector(500, 230), Vector.formAngle(16, 2))];
 let fields = [new Field(new Vector(400, 230), -110), new Field(new Vector(340, 170), 180), new Field(new Vector(400, 100), -40)];
 
@@ -51,6 +74,12 @@ function addNewParticles() {
     for(let j = 0; j < emissionRate; j++){
       particles.push(emitters[i].emitParticle());
     }
+  }
+}
+
+function addNewParticlesFromMouse(){
+  for(let i = 0; i < mouseEmissionRate; i++){
+    particles.push(mouseDown.emitParticle())
   }
 }
 
